@@ -1,90 +1,58 @@
+// Simple raylib example for PS2
+// This file demonstrates basic raylib usage
 
-#include <tamtypes.h>
-#include <kernel.h>
-#include <sifrpc.h>
-#include <stdio.h>
-#include <debug.h>
-#include "gamepad.h"
+#include "raylib.h"
 
-
-int main(int argc, char *argv[])
+int main(void)
 {
-  
+    // PS2 standard resolution
+    const int screenWidth = 640;
+    const int screenHeight = 448;
 
-    // Initialize debug screen
-    init_scr();
+    InitWindow(screenWidth, screenHeight, "Play2Launcher - Raylib Test");
+    SetTargetFPS(60);
 
-    // Reset and initialize IOP (Input/Output Processor)
-    SifInitRpc(0);
+    Vector2 ballPosition = { (float)screenWidth / 2, (float)screenHeight / 2 };
+    Vector2 ballSpeed = { 2.0f, 2.0f };
+    float ballRadius = 20.0f;
+    // Texture2D texture = LoadTexture("resources/afatso.png");
 
-    // Initialize gamepad
-    InitGamepad(0,0);
+    int frameCounter = 0;
 
-    scr_printf("\nPress buttons to see input:\n\n");
-    GamepadState lastGamepadState = {};
-    lastGamepadState.circle = 1; // Ensure first read is different
-
-    // Main loop - read and display controller input
-    while (1)
+    // Main game loop
+    while (!WindowShouldClose())
     {
-        // Update gamepad state
-        GamepadState gamepad = GetGamepadState(0,0);
-        if(lastGamepadState == gamepad)
-        {
-            continue;
-        }
-        // Clear the screen every frame
-        scr_clear();
+        // Update
+        frameCounter++;
+        
+        ballPosition.x += ballSpeed.x;
+        ballPosition.y += ballSpeed.y;
 
-        // Redraw UI
-        scr_printf("========================================\n");
-        scr_printf("     PS2 Controller Test\n");
-        scr_printf("========================================\n");
-        scr_printf("\n");
-        scr_printf("Press buttons to see input:\n\n");
+        // Check collision with screen borders
+        if ((ballPosition.x >= (screenWidth - ballRadius)) || (ballPosition.x <= ballRadius))
+            ballSpeed.x *= -1.0f;
+        if ((ballPosition.y >= (screenHeight - ballRadius)) || (ballPosition.y <= ballRadius))
+            ballSpeed.y *= -1.0f;
 
-        // Display pressed buttons
-        scr_printf("Buttons: ");
-        if (gamepad.left)
-            scr_printf("LEFT ");
-        if (gamepad.right)
-            scr_printf("RIGHT ");
-        if (gamepad.up)
-            scr_printf("UP ");
-        if (gamepad.down)
-            scr_printf("DOWN ");
-        if (gamepad.cross)
-            scr_printf("X ");
-        if (gamepad.circle)
-            scr_printf("O ");
-        if (gamepad.square)
-            scr_printf("[] ");
-        if (gamepad.triangle)
-            scr_printf("/\\ ");
-        if (gamepad.l1)
-            scr_printf("L1 ");
-        if (gamepad.l2)
-            scr_printf("L2 ");
-        if (gamepad.r1)
-            scr_printf("R1 ");
-        if (gamepad.r2)
-            scr_printf("R2 ");
-        if (gamepad.l3)
-            scr_printf("L3 ");
-        if (gamepad.r3)
-            scr_printf("R3 ");
-        if (gamepad.start)
-            scr_printf("START ");
-        if (gamepad.select)
-            scr_printf("SELECT ");
+        // Draw
+        BeginDrawing();
 
-        scr_printf("\n");
-        // Display analog stick values
-        scr_printf("Left Stick : (%3d, %3d)\n", gamepad.left_stick_x, gamepad.left_stick_y);
-        scr_printf("Right Stick: (%3d, %3d)\n", gamepad.right_stick_x, gamepad.right_stick_y);
+            ClearBackground(RAYWHITE);
 
-        lastGamepadState = gamepad;
+            DrawText("Play2Launcher with Raylib!", 120, 20, 30, DARKGRAY);
+            DrawText("PS2 OpenGL Rendering", 190, 60, 20, GRAY);
+
+            DrawCircleV(ballPosition, ballRadius, MAROON);
+            // Draw texture centered on ballPosition
+            // Vector2 texPos = { ballPosition.x - (float)texture.width * 0.5f,ballPosition.y - (float)texture.height * 0.5f };
+            // DrawTextureV(texture, texPos, WHITE);
+
+            DrawFPS(10, 10);
+
+        EndDrawing();
     }
+
+    CloseWindow();
 
     return 0;
 }

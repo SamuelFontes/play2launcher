@@ -1,0 +1,13 @@
+*.o
+*.vo
+*.a
+*.elf
+
+deps_*
+objs_*
+prebuilddone
+*.o
+*.vo
+*.a
+*.elf
+*.orig

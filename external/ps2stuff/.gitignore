@@ -1,0 +1,5 @@
+deps_*
+objs_*
+prebuilddone
+*.o
+*.a

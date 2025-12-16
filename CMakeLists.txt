@@ -6,6 +6,7 @@ if(NOT DEFINED ENV{PS2SDK})
 endif()
 
 set(PS2SDK $ENV{PS2SDK})
+set(GSKIT $ENV{GSKIT})
 
 # Set the PS2SDK toolchain (must be before project())
 set(CMAKE_SYSTEM_NAME Generic)
@@ -28,7 +29,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-project(play2launcher CXX)
+project(play2launcher C CXX)
 
 # Generate compile_commands.json for LSP/IDE support
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -50,15 +51,39 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O0 -gdwarf-2 -gz")
 set(CMAKE_C_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
+# Use raylib and ps2gl from external folders
+set(PS2GL_DIR "${CMAKE_SOURCE_DIR}/external/ps2gl")
+set(PS2STUFF_DIR "${CMAKE_SOURCE_DIR}/external/ps2stuff")
+set(RAYLIB_DIR "${CMAKE_SOURCE_DIR}/external/raylib")
+
+# Check if raylib is built
+if(EXISTS "${RAYLIB_DIR}/src/libraylib.a")
+    message(STATUS "Found raylib at ${RAYLIB_DIR}")
+    include_directories(${RAYLIB_DIR}/src)
+else()
+    message(WARNING "raylib not found or not built. Run ./setup_raylib.sh to build dependencies")
+endif()
+
+# Check if ps2gl is built
+if(EXISTS "${PS2GL_DIR}/libps2gl.a")
+    message(STATUS "Found ps2gl at ${PS2GL_DIR}")
+    include_directories(${PS2GL_DIR}/include)
+    include_directories(${PS2STUFF_DIR}/include)
+else()
+    message(WARNING "ps2gl not found or not built. Run ./setup_raylib.sh to build dependencies")
+endif()
+
 # Include directories
 include_directories(
     ${PS2SDK}/ee/include
     ${PS2SDK}/common/include
+    ${GSKIT}/include
 )
 
 # Link directories
 link_directories(
     ${PS2SDK}/ee/lib
+    ${GSKIT}/lib
 )
 
 # Source files
@@ -68,11 +93,26 @@ file(GLOB SOURCES "*.cpp")
 add_executable(play2launcher.elf ${SOURCES})
 
 # Link libraries (order matters for PS2SDK)
+# Link raylib and ps2gl directly from external folders
+if(EXISTS "${RAYLIB_DIR}/src/libraylib.a")
+    target_link_libraries(play2launcher.elf ${RAYLIB_DIR}/src/libraylib.a)
+endif()
+
+if(EXISTS "${PS2GL_DIR}/libps2gl.a")
+    target_link_libraries(play2launcher.elf 
+        ${PS2GL_DIR}/libps2gl.a
+        ${PS2STUFF_DIR}/libps2stuff.a
+    )
+endif()
+
 # Set linker flags to match PS2SDK requirements exactly
 target_link_options(play2launcher.elf PRIVATE
     -T${PS2SDK}/ee/startup/linkfile
     -L${PS2SDK}/ee/lib
+    -L${GSKIT}/lib
     -Wl,-zmax-page-size=128
+    -ldma
+    -lgraph
     -ldebug
     -lpad
     -lkernel
