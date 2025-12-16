@@ -28,7 +28,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-project(play2launcher C)
+project(play2launcher CXX)
 
 # Generate compile_commands.json for LSP/IDE support
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -63,7 +63,7 @@ link_directories(
 
 # Source files
 set(SOURCES
-    main.c
+    main.cpp
 )
 
 # Create the executable
