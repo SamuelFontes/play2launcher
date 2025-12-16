@@ -25,19 +25,9 @@ int main(int argc, char *argv[])
     scr_printf("========================================\n");
     scr_printf("     PS2 Hello World Launcher\n");
     scr_printf("========================================\n");
-    scr_printf("\n");
-    scr_printf("Hello World from PlayStation 2!\n");
-    scr_printf("\n");
-    scr_printf("This is a custom .elf launcher built\n");
-    scr_printf("with ps2dev toolchain.\n");
-    scr_printf("\n");
-    scr_printf("Program will exit automatically...\n");
-    scr_printf("\n");
-    
-    // Wait a bit to display the message
-    #define DISPLAY_DELAY 100000000
-    int i;
-    for (i = 0; i < DISPLAY_DELAY; i++) {
+
+    // Infinite loop
+    while (1) {
         asm("nop");
     }
     
