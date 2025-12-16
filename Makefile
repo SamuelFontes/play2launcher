@@ -11,8 +11,12 @@ EE_OBJS = main.o
 # PS2SDK libraries to link
 EE_LIBS = -ldebug -lkernel
 
+# Compiler flags without debug symbols
+EE_CFLAGS = -D_EE -G0 -O2 -Wall
+
 # Include PS2SDK makefiles
 all: $(EE_BIN)
+	mips64r5900el-ps2-elf-strip $(EE_BIN)
 
 clean:
 	rm -f $(EE_OBJS) $(EE_BIN)
