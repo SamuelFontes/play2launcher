@@ -1,7 +1,3 @@
-/*
- * PS2 Hello World Launcher
- * A simple .elf launcher for PlayStation 2
- */
 
 #include <tamtypes.h>
 #include <kernel.h>
