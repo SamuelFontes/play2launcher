@@ -32,6 +32,17 @@ void InitGamepad(int port, int slot)
         state = padGetState(port, slot);
     }
 
+    // Enable analog mode (DualShock mode) to read analog sticks
+    scr_printf("Enabling analog mode...\n");
+    padSetMainMode(port, slot, PAD_MMODE_DUALSHOCK, PAD_MMODE_LOCK);
+    
+    // Wait for mode to be set
+    state = padGetState(port, slot);
+    while ((state != PAD_STATE_STABLE) && (state != PAD_STATE_FINDCTP1))
+    {
+        state = padGetState(port, slot);
+    }
+
     scr_printf("Controller ready!\n");
 }
 
