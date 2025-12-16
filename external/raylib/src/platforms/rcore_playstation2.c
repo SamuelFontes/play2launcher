@@ -498,6 +498,27 @@ void PollInputEvents(void)
                     CORE.Input.Gamepad.currentButtonState[port][buttonMap[j].raylibButton] = 0;
                 }
             }
+            
+            // Map PS2 analog sticks to raylib gamepad axis
+            // PS2 analog values are 0-255, with 128 as center
+            // Raylib expects -1.0 to 1.0, with 0.0 as center
+            
+            // Left stick
+            CORE.Input.Gamepad.axisState[port][GAMEPAD_AXIS_LEFT_X] = (buttons.ljoy_h - 128) / 128.0f;
+            CORE.Input.Gamepad.axisState[port][GAMEPAD_AXIS_LEFT_Y] = (buttons.ljoy_v - 128) / 128.0f;
+            
+            // Right stick
+            CORE.Input.Gamepad.axisState[port][GAMEPAD_AXIS_RIGHT_X] = (buttons.rjoy_h - 128) / 128.0f;
+            CORE.Input.Gamepad.axisState[port][GAMEPAD_AXIS_RIGHT_Y] = (buttons.rjoy_v - 128) / 128.0f;
+            
+            // PS2 DualShock has pressure-sensitive L2/R2 buttons
+            // Convert pressure values (0-255) to raylib trigger range (-1.0 to 1.0)
+            // Note: Raylib uses -1.0 for unpressed, 1.0 for fully pressed
+            CORE.Input.Gamepad.axisState[port][GAMEPAD_AXIS_LEFT_TRIGGER] = (buttons.l2_p / 128.0f) - 1.0f;
+            CORE.Input.Gamepad.axisState[port][GAMEPAD_AXIS_RIGHT_TRIGGER] = (buttons.r2_p / 128.0f) - 1.0f;
+            
+            // Set axis count
+            CORE.Input.Gamepad.axisCount[port] = 6;
         }
     }
     else if(ret == PAD_STATE_DISCONN) 
