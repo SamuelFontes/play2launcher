@@ -30,6 +30,9 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 project(play2launcher C)
 
+# Generate compile_commands.json for LSP/IDE support
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
