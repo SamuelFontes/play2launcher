@@ -9,7 +9,7 @@ EE_BIN = play2launcher.elf
 EE_OBJS = main.o
 
 # PS2SDK libraries to link
-EE_LIBS = -ldebug -lkernel
+EE_LIBS = -ldebug -lpad -lkernel
 
 # Compiler flags without debug symbols
 EE_CFLAGS = -D_EE -G0 -O2 -Wall
