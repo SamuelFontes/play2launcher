@@ -465,49 +465,45 @@ void PollInputEvents(void)
     for (int i = 0; i < MAX_TOUCH_POINTS; i++) CORE.Input.Touch.previousTouchState[i] = CORE.Input.Touch.currentTouchState[i];
 
 
-    //PlayStation 2 provisional
-
-
-
+    //PlayStation 2 gamepad input polling
     int ret=padGetState(port, slot);
-    while((ret != PAD_STATE_STABLE) && (ret != PAD_STATE_FINDCTP1)) 
+    
+    // Check if pad is ready
+    if((ret == PAD_STATE_STABLE) || (ret == PAD_STATE_FINDCTP1)) 
     {
-        if(ret==PAD_STATE_DISCONN) 
+        CORE.Input.Gamepad.ready[port] = true;
+        
+        // Register previous gamepad button states
+        for (int k = 0; k < MAX_GAMEPAD_BUTTONS; k++) 
+            CORE.Input.Gamepad.previousButtonState[port][k] = CORE.Input.Gamepad.currentButtonState[port][k];
+
+        ret = padRead(port, slot, &buttons); // port, slot, buttons
+
+        if (ret != 0) 
         {
-            TRACELOG(LOG_INFO,"Pad(%d, %d) is disconnected", port, slot);
-        }
-        ret=padGetState(port, slot);
-    }
-    CORE.Input.Gamepad.ready[port] = true;
-
-    // Register previous gamepad button states
-    for (int k = 0; k < MAX_GAMEPAD_BUTTONS; k++) 
-        CORE.Input.Gamepad.previousButtonState[port][k] = CORE.Input.Gamepad.currentButtonState[port][k];
-
-
-    ret = padRead(port, slot, &buttons); // port, slot, buttons
-
-    if (ret != 0) 
-    {
-        paddata = 0xffff ^ buttons.btns;
-        new_pad = paddata & ~old_pad;
-        old_pad = paddata;
-        //MapControls(port, buttons);
-        for (int j = 0; j < sizeof(buttonMap) / sizeof(buttonMap[0]); j++) 
-        {
-            if (paddata & buttonMap[j].ps2Button)
+            paddata = 0xffff ^ buttons.btns;
+            new_pad = paddata & ~old_pad;
+            old_pad = paddata;
+            
+            // Map PS2 buttons to raylib gamepad buttons
+            for (int j = 0; j < sizeof(buttonMap) / sizeof(buttonMap[0]); j++) 
             {
-                CORE.Input.Gamepad.currentButtonState[port][buttonMap[j].raylibButton] = 1;
-                CORE.Input.Gamepad.lastButtonPressed = buttonMap[j].raylibButton;
-            } 
-            else 
-            {
-                CORE.Input.Gamepad.currentButtonState[port][buttonMap[j].raylibButton] = 0;
+                if (paddata & buttonMap[j].ps2Button)
+                {
+                    CORE.Input.Gamepad.currentButtonState[port][buttonMap[j].raylibButton] = 1;
+                    CORE.Input.Gamepad.lastButtonPressed = buttonMap[j].raylibButton;
+                } 
+                else 
+                {
+                    CORE.Input.Gamepad.currentButtonState[port][buttonMap[j].raylibButton] = 0;
+                }
             }
         }
-
-
-
+    }
+    else if(ret == PAD_STATE_DISCONN) 
+    {
+        CORE.Input.Gamepad.ready[port] = false;
+        TRACELOG(LOG_INFO,"Pad(%d, %d) is disconnected", port, slot);
     }
 
         
