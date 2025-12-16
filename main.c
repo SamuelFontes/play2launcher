@@ -31,12 +31,13 @@ int main(int argc, char *argv[])
     scr_printf("This is a custom .elf launcher built\n");
     scr_printf("with ps2dev toolchain.\n");
     scr_printf("\n");
-    scr_printf("Press any button to exit...\n");
+    scr_printf("Program will exit automatically...\n");
     scr_printf("\n");
     
     // Wait a bit to display the message
+    #define DISPLAY_DELAY 100000000
     int i;
-    for (i = 0; i < 100000000; i++) {
+    for (i = 0; i < DISPLAY_DELAY; i++) {
         asm("nop");
     }
     
