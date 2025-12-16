@@ -30,9 +30,22 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 project(play2launcher C)
 
-# Compiler flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_EE -G0 -O2 -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_EE -G0 -O2 -Wall")
+# Set default build type to Debug if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+endif()
+
+# Base compiler flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_EE -G0 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_EE -G0 -Wall")
+
+# Debug configuration
+set(CMAKE_C_FLAGS_DEBUG "-O0 -gdwarf-2 -gz")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -gdwarf-2 -gz")
+
+# Release configuration
+set(CMAKE_C_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 # Include directories
 include_directories(
@@ -64,11 +77,13 @@ target_link_options(play2launcher.elf PRIVATE
     -lkernel
 )
 
-# Strip the executable after building
-add_custom_command(TARGET play2launcher.elf POST_BUILD
-    COMMAND ${CMAKE_STRIP} $<TARGET_FILE:play2launcher.elf>
-    COMMENT "Stripping executable..."
-)
+# Strip the executable only for Release builds
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_custom_command(TARGET play2launcher.elf POST_BUILD
+        COMMAND ${CMAKE_STRIP} $<TARGET_FILE:play2launcher.elf>
+        COMMENT "Stripping release executable..."
+    )
+endif()
 
 # Install target (optional)
 install(TARGETS play2launcher.elf DESTINATION bin)
