@@ -6,6 +6,7 @@
 #include <debug.h>
 #include "gamepad.h"
 
+
 int main(int argc, char *argv[])
 {
   
@@ -16,28 +17,34 @@ int main(int argc, char *argv[])
     // Reset and initialize IOP (Input/Output Processor)
     SifInitRpc(0);
 
-    // Clear the screen
-    scr_printf("\n\n");
-    scr_printf("========================================\n");
-    scr_printf("     PS2 Controller Test\n");
-    scr_printf("========================================\n");
-    scr_printf("\n");
-
     // Initialize gamepad
     InitGamepad(0,0);
 
     scr_printf("\nPress buttons to see input:\n\n");
+    GamepadState lastGamepadState = {};
+    lastGamepadState.circle = 1; // Ensure first read is different
 
     // Main loop - read and display controller input
     while (1)
     {
-
         // Update gamepad state
         GamepadState gamepad = GetGamepadState(0,0);
+        if(lastGamepadState == gamepad)
+        {
+            continue;
+        }
+        // Clear the screen every frame
+        scr_clear();
+
+        // Redraw UI
+        scr_printf("========================================\n");
+        scr_printf("     PS2 Controller Test\n");
+        scr_printf("========================================\n");
+        scr_printf("\n");
+        scr_printf("Press buttons to see input:\n\n");
 
         // Display pressed buttons
-        scr_printf("\r"); // Carriage return to overwrite line
-
+        scr_printf("Buttons: ");
         if (gamepad.left)
             scr_printf("LEFT ");
         if (gamepad.right)
@@ -71,13 +78,12 @@ int main(int argc, char *argv[])
         if (gamepad.select)
             scr_printf("SELECT ");
 
+        scr_printf("\n");
         // Display analog stick values
-        scr_printf(" | L:(%3d,%3d) R:(%3d,%3d)",
-                   gamepad.left_stick_x, gamepad.left_stick_y,
-                   gamepad.right_stick_x, gamepad.right_stick_y);
+        scr_printf("Left Stick : (%3d, %3d)\n", gamepad.left_stick_x, gamepad.left_stick_y);
+        scr_printf("Right Stick: (%3d, %3d)\n", gamepad.right_stick_x, gamepad.right_stick_y);
 
-        // Clear rest of line
-        scr_printf("                    ");
+        lastGamepadState = gamepad;
     }
 
     return 0;

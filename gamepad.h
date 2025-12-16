@@ -2,6 +2,7 @@
 
 #include <tamtypes.h>
 
+
 // Gamepad state structure
 typedef struct
 {
@@ -29,6 +30,31 @@ typedef struct
     u8 left_stick_y;
 } GamepadState;
 
+// Equality operator for GamepadState so we can compare previous and current states.
+// Compares all known fields explicitly.
+static bool operator==(const GamepadState& a, const GamepadState& b)
+{
+    return a.left == b.left &&
+           a.right == b.right &&
+           a.up == b.up &&
+           a.down == b.down &&
+           a.cross == b.cross &&
+           a.circle == b.circle &&
+           a.square == b.square &&
+           a.triangle == b.triangle &&
+           a.l1 == b.l1 &&
+           a.l2 == b.l2 &&
+           a.r1 == b.r1 &&
+           a.r2 == b.r2 &&
+           a.l3 == b.l3 &&
+           a.r3 == b.r3 &&
+           a.start == b.start &&
+           a.select == b.select &&
+           a.left_stick_x == b.left_stick_x &&
+           a.left_stick_y == b.left_stick_y &&
+           a.right_stick_x == b.right_stick_x &&
+           a.right_stick_y == b.right_stick_y;
+}
 // Initialize gamepad system
 void InitGamepad(int port, int slot);
 
