@@ -18,8 +18,15 @@ typedef struct
     int l2;
     int r1;
     int r2;
+    int l3;
+    int r3;
     int start;
     int select;
+    // Analog stick values (0-255, centered at 128)
+    u8 right_stick_x;
+    u8 right_stick_y;
+    u8 left_stick_x;
+    u8 left_stick_y;
 } GamepadState;
 
 // Initialize gamepad system

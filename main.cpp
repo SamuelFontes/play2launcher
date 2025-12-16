@@ -62,10 +62,19 @@ int main(int argc, char *argv[])
             scr_printf("R1 ");
         if (gamepad.r2)
             scr_printf("R2 ");
+        if (gamepad.l3)
+            scr_printf("L3 ");
+        if (gamepad.r3)
+            scr_printf("R3 ");
         if (gamepad.start)
             scr_printf("START ");
         if (gamepad.select)
             scr_printf("SELECT ");
+
+        // Display analog stick values
+        scr_printf(" | L:(%3d,%3d) R:(%3d,%3d)",
+                   gamepad.left_stick_x, gamepad.left_stick_y,
+                   gamepad.right_stick_x, gamepad.right_stick_y);
 
         // Clear rest of line
         scr_printf("                    ");

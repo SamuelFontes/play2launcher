@@ -58,8 +58,16 @@ GamepadState GetGamepadState(int port, int slot)
         state.l2 = (state.raw_buttons & PAD_L2) ? 1 : 0;
         state.r1 = (state.raw_buttons & PAD_R1) ? 1 : 0;
         state.r2 = (state.raw_buttons & PAD_R2) ? 1 : 0;
+        state.l3 = (state.raw_buttons & PAD_L3) ? 1 : 0;
+        state.r3 = (state.raw_buttons & PAD_R3) ? 1 : 0;
         state.start = (state.raw_buttons & PAD_START) ? 1 : 0;
         state.select = (state.raw_buttons & PAD_SELECT) ? 1 : 0;
+        
+        // Read analog stick values
+        state.right_stick_x = buttons.rjoy_h;
+        state.right_stick_y = buttons.rjoy_v;
+        state.left_stick_x = buttons.ljoy_h;
+        state.left_stick_y = buttons.ljoy_v;
     }
     return state;
 }
