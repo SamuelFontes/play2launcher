@@ -43,6 +43,17 @@ void InitGamepad(int port, int slot)
         state = padGetState(port, slot);
     }
 
+    // Enter pressure-sensitive mode to enable L3/R3 buttons
+    scr_printf("Enabling pressure mode...\n");
+    padEnterPressMode(port, slot);
+    
+    // Wait for mode to be set
+    state = padGetState(port, slot);
+    while ((state != PAD_STATE_STABLE) && (state != PAD_STATE_FINDCTP1))
+    {
+        state = padGetState(port, slot);
+    }
+
     scr_printf("Controller ready!\n");
 }
 
