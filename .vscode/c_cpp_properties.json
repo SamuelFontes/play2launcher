@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "PS2",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${env:PS2SDK}/ee/include",
+                "${env:PS2SDK}/common/include"
+            ],
+            "defines": [
+                "_EE"
+            ],
+            "compilerPath": "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}

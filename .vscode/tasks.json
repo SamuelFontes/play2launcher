@@ -1,0 +1,92 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build"
+            ],
+            "options": {
+                "env": {
+                    "PS2DEV": "/usr/local/ps2dev",
+                    "PS2SDK": "/usr/local/ps2dev/ps2sdk",
+                    "GSKIT": "/usr/local/ps2dev/gsKit",
+                    "PATH": "${env:PATH}:/usr/local/ps2dev/bin:/usr/local/ps2dev/ee/bin:/usr/local/ps2dev/iop/bin:/usr/local/ps2dev/dvp/bin:/usr/local/ps2dev/ps2sdk/bin"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Launch PCSX2 with Debugger",
+            "type": "shell",
+            "command": "flatpak",
+            "args": [
+                "run",
+                "--filesystem=${workspaceFolder}",
+                "net.pcsx2.PCSX2",
+                "-debugger",
+                "${workspaceFolder}/build/play2launcher.elf"
+            ],
+            "options": {
+                "env": {
+                    "PS2DEV": "/usr/local/ps2dev",
+                    "PS2SDK": "/usr/local/ps2dev/ps2sdk",
+                    "GSKIT": "/usr/local/ps2dev/gsKit",
+                    "PATH": "${env:PATH}:/usr/local/ps2dev/bin:/usr/local/ps2dev/ee/bin:/usr/local/ps2dev/iop/bin:/usr/local/ps2dev/dvp/bin:/usr/local/ps2dev/ps2sdk/bin"
+                }
+            },
+            "dependsOn": ["Build Debug"],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+        {
+            "label": "Launch PCSX2 (No Debugger)",
+            "type": "shell",
+            "command": "flatpak",
+            "args": [
+                "run",
+                "--filesystem=${workspaceFolder}",
+                "net.pcsx2.PCSX2",
+                "${workspaceFolder}/build/play2launcher.elf"
+            ],
+            "dependsOn": ["Build Debug"],
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Kill PCSX2",
+            "type": "shell",
+            "command": "flatpak",
+            "args": [
+                "kill",
+                "net.pcsx2.PCSX2"
+            ],
+            "presentation": {
+                "reveal": "silent"
+            }
+        }
+    ]
+}
