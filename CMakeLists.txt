@@ -62,9 +62,7 @@ link_directories(
 )
 
 # Source files
-set(SOURCES
-    main.cpp
-)
+file(GLOB SOURCES "*.cpp")
 
 # Create the executable
 add_executable(play2launcher.elf ${SOURCES})
